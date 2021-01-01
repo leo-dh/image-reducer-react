@@ -41,6 +41,7 @@ module.exports = {
     "no-unused-expressions": "off",
     "@typescript-eslint/no-unused-expressions": ["error"],
     ...a11yOff,
+    "no-plusplus": "off",
   },
   settings: {
     "import/resolver": {
