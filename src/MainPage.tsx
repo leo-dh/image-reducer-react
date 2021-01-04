@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import Tabs from "./components/Tabs";
 
 enum COMPRESSION_MODE {
   LOSSLESS = "LOSSLESS",
@@ -53,24 +54,13 @@ function MainPage() {
         <h1 className="text-center text-3xl text-purple-500 font-bold mb-12">
           Minify Images
         </h1>
-        <div className="mb-4 flex items-center w-min p-2 ">
-          <h3 className="font-bold ml-4 mr-8">MODE: </h3>
-          <ul className="flex cursor-pointer border-gray-200 border-2 w-min ">
-            {Object.values(COMPRESSION_MODE).map((value) => (
-              <li
-                key={value}
-                className={`py-2 px-6 text-sm font-semibold ${
-                  compressionMode === value
-                    ? "bg-white shadow-inner"
-                    : "text-gray-500 bg-gray-200"
-                }`}
-                onClick={() => setCompressionMode(value)}
-              >
-                {value}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <Tabs<COMPRESSION_MODE>
+          activeValue={compressionMode}
+          values={Object.values(COMPRESSION_MODE)}
+          callback={setCompressionMode}
+          info={<h3 className="font-bold ml-4 mr-8 min-w-8ch">MODE: </h3>}
+          className="mb-4 p-2"
+        />
         {compressionMode === COMPRESSION_MODE.LOSSY && (
           <div className="mb-4 flex items-center w-min p-2">
             <h3 className="font-bold ml-4 mr-8">QUALITY: </h3>
