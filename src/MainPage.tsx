@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import Tabs from "./components/Tabs";
+import Slider from "./components/Slider";
 
 enum COMPRESSION_MODE {
   LOSSLESS = "LOSSLESS",
@@ -62,39 +63,12 @@ function MainPage() {
           className="mb-4 p-2"
         />
         {compressionMode === COMPRESSION_MODE.LOSSY && (
-          <div className="mb-4 flex items-center w-min p-2">
-            <h3 className="font-bold ml-4 mr-8">QUALITY: </h3>
-            <input
-              type="range"
-              min="1"
-              max="100"
-              step="1"
-              value={quality}
-              onChange={(e) => {
-                setQuality(Number(e.target.value));
-              }}
-              className="slider"
-            />
-            <input
-              className="bg-gray-200 w-16 ml-4 px-2 py-1 text-right font-semibold rounded-sm"
-              type="number"
-              value={quality}
-              min="1"
-              max="100"
-              step="1"
-              pattern="\d+"
-              onChange={(e) => {
-                const numValue = Number(e.target.value);
-                if (numValue > 100) {
-                  setQuality(100);
-                } else if (numValue < 1) {
-                  setQuality(1);
-                } else {
-                  setQuality(Math.round(numValue));
-                }
-              }}
-            />
-          </div>
+          <Slider
+            callback={setQuality}
+            value={quality}
+            info={<h3 className="font-bold ml-4 mr-8 min-w-8ch">QUALITY: </h3>}
+            className="mb-4 p-2"
+          />
         )}
         <div
           className="border-dashed border-2 border-gray-400 rounded-md py-12 flex flex-col justify-center items-center relative"
