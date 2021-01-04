@@ -2,36 +2,43 @@ import React, { useState, useRef } from "react";
 import Tabs from "./components/Tabs";
 import Slider from "./components/Slider";
 import Preview from "./components/Preview";
+import ResultCard from "./components/ResultCard";
 
 enum COMPRESSION_MODE {
   LOSSLESS = "LOSSLESS",
   LOSSY = "LOSSY",
 }
+interface CompressResults {
+  filename: string;
+  initialSize: string;
+  finalSize: string;
+  url: string;
+}
+
+const BACKEND_URL = "/minify";
 
 function MainPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const [formData, setFormData] = useState(new FormData());
+  const [images, setImages] = useState<File[]>([]);
   const [quality, setQuality] = useState(80);
   const [compressionMode, setCompressionMode] = useState(
     COMPRESSION_MODE.LOSSLESS
   );
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<CompressResults[]>([]);
 
   const filterFiles = (fileList: FileList) => {
-    setFormData((oldValue) => {
-      const newValue = new FormData();
-      const images = oldValue.getAll("images");
-      images.forEach((value) => {
-        newValue.append("images", value);
-      });
-      const limits = Math.min(10 - images.length, fileList.length);
+    setImages((oldValue) => {
+      const newValue = [...oldValue];
+      const limits = Math.min(10 - newValue.length, fileList.length);
       for (let i = 0; i < limits; i++) {
         const element = fileList[i];
         if (
           element.size < 30 * 1024 * 1024 &&
           element.type.match(/image\/(jpg|jpeg|png)/)
         ) {
-          newValue.append("images", element);
+          newValue.push(element);
         }
       }
       return newValue;
@@ -39,15 +46,37 @@ function MainPage() {
   };
 
   const deleteFile = (index: number) => {
-    setFormData((oldValue) => {
-      const newValue = new FormData();
-      const images = oldValue.getAll("images");
-      images.splice(index, 1);
-      images.forEach((value) => {
-        newValue.append("images", value);
-      });
+    setImages((oldValue) => {
+      const newValue = [...oldValue];
+      newValue.splice(index, 1);
       return newValue;
     });
+  };
+
+  const sendImages = () => {
+    const promises = images.map(async (file) => {
+      const formData = new FormData();
+      formData.append("image", file);
+      const url = `${BACKEND_URL}${
+        compressionMode === COMPRESSION_MODE.LOSSY
+          ? `?${new URLSearchParams({ quality: quality.toString() })}`
+          : ""
+      }`;
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          body: formData,
+        });
+        const value = await res.json();
+        setResult((oldValue) => {
+          const newValue = [...oldValue, value];
+          return newValue;
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    });
+    return promises;
   };
 
   return (
@@ -60,14 +89,14 @@ function MainPage() {
           activeValue={compressionMode}
           values={Object.values(COMPRESSION_MODE)}
           callback={setCompressionMode}
-          info={<h3 className="font-bold ml-4 mr-8 min-w-8ch">MODE: </h3>}
+          info={<h3 className="font-bold mr-4 min-w-8ch">MODE: </h3>}
           className="mb-4 p-2"
         />
         {compressionMode === COMPRESSION_MODE.LOSSY && (
           <Slider
             callback={setQuality}
             value={quality}
-            info={<h3 className="font-bold ml-4 mr-8 min-w-8ch">QUALITY: </h3>}
+            info={<h3 className="font-bold mr-4 min-w-8ch">QUALITY: </h3>}
             className="mb-4 p-2"
           />
         )}
@@ -140,21 +169,66 @@ function MainPage() {
           </button>
         </div>
 
-        <h1 className="pt-8 pb-3 font-semibold sm:text-lg text-gray-900">
+        <h3 className="pt-8 pb-3 font-semibold sm:text-lg text-gray-900">
           Uploaded Images
-        </h1>
-        <Preview
-          deleteCallback={deleteFile}
-          files={formData.getAll("images")}
-        />
+        </h3>
+        <Preview deleteCallback={deleteFile} files={images} />
         <div className="pt-8 flex justify-end">
           <button
             type="submit"
-            className="mt-2 rounded-md px-3 py-1 bg-purple-500 text-white hover:bg-gray-300 hover:text-black focus:shadow-outline focus:outline-none transition-colors duration-300 font-semibold"
+            className={`mt-2 rounded-md px-3 py-1 bg-purple-500 text-white flex items-center disabled:opacity-50  focus:shadow-outline focus:outline-none transition-colors duration-300 font-semibold ${
+              loading
+                ? "cursor-not-allowed"
+                : "hover:bg-gray-300 hover:text-black cursor-pointer"
+            }`}
+            onClick={async () => {
+              if (images.length === 0) return;
+              setLoading(true);
+              const responses = sendImages();
+              await Promise.all(responses);
+              setImages([]);
+              setLoading(false);
+            }}
+            disabled={loading}
           >
-            Submit
+            {loading && (
+              <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+            )}
+            {loading ? "Submitting" : "Submit"}
           </button>
         </div>
+        {result.length > 0 && (
+          <div className="flex flex-col">
+            <h3 className="pt-8 pb-3 font-semibold sm:text-lg text-gray-900">
+              Results
+            </h3>
+            <div className="flex flex-wrap bg-gray-100 rounded-md p-2">
+              {result.map(({ filename, finalSize, initialSize, url }) => (
+                <ResultCard
+                  filename={filename}
+                  finalSize={finalSize}
+                  url={url}
+                  initialSize={initialSize}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

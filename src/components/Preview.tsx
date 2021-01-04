@@ -1,8 +1,7 @@
 import React, { HTMLProps } from "react";
 
 interface PreviewProps {
-  // eslint-disable-next-line no-undef
-  files: FormDataEntryValue[];
+  files: File[];
   deleteCallback: (idx: number) => void;
 }
 
@@ -12,12 +11,17 @@ export default function Preview({
   className,
 }: PreviewProps & HTMLProps<HTMLUListElement>) {
   return (
-    <ul id="gallery" className={`flex flex-1 flex-wrap -m-1 ${className}`}>
+    <ul
+      id="gallery"
+      className={`flex flex-1 flex-wrap -m-1 ${
+        files.length > 0 ? "bg-gray-100" : ""
+      } rounded-md p-2 ${className}`}
+    >
       {files.length > 0 ? (
         files.map((file, index) => (
           <li
-            className="block p-1 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/6 h-24 sm:h-48 md:h-44 lg:h-36 xl:h-48"
-            key={(file as File).name}
+            className="block p-2 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/6 h-24 sm:h-48 md:h-44 lg:h-36 xl:h-48"
+            key={file.name}
           >
             <div
               tabIndex={0}
@@ -26,11 +30,11 @@ export default function Preview({
               <img
                 alt="upload preview"
                 src={URL.createObjectURL(file)}
-                className="w-full h-full sticky object-cover rounded-md bg-fixed"
+                className="w-full h-full sticky object-cover rounded-md bg-fixed shadow-lg"
               />
 
               <div className="flex flex-col rounded-md text-xs break-words w-full h-full z-20 absolute top-0 py-2 px-3 hover:bg-gray-700 transition-colors hover:bg-opacity-70 hover:text-white duration-300">
-                <h1 className="flex-1">{(file as File).name}</h1>
+                <h1 className="flex-1">{file.name}</h1>
                 <div className="flex">
                   <span className="p-1">
                     <i>
@@ -47,7 +51,7 @@ export default function Preview({
                   </span>
 
                   <p className="p-1 size text-xs">
-                    {((file as File).size / 1024 / 1024).toFixed(3)} MB
+                    {(file.size / 1024 / 1024).toFixed(3)} MB
                   </p>
                   <button
                     type="button"
