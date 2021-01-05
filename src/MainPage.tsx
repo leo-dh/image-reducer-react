@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import Tabs from "./components/Tabs";
 import Slider from "./components/Slider";
 import Preview from "./components/Preview";
-import ResultCard from "./components/ResultCard";
 
 enum COMPRESSION_MODE {
   LOSSLESS = "LOSSLESS",
@@ -90,14 +89,14 @@ function MainPage() {
           values={Object.values(COMPRESSION_MODE)}
           callback={setCompressionMode}
           info={<h3 className="font-bold mr-4 min-w-8ch">MODE: </h3>}
-          className="mb-4 p-2"
+          className="mb-4 sm:p-2"
         />
         {compressionMode === COMPRESSION_MODE.LOSSY && (
           <Slider
             callback={setQuality}
             value={quality}
             info={<h3 className="font-bold mr-4 min-w-8ch">QUALITY: </h3>}
-            className="mb-4 p-2"
+            className="mb-4 sm:p-2"
           />
         )}
         <div
@@ -217,16 +216,49 @@ function MainPage() {
             <h3 className="pt-8 pb-3 font-semibold sm:text-lg text-gray-900">
               Results
             </h3>
-            <div className="flex flex-wrap bg-gray-100 rounded-md p-2">
-              {result.map(({ filename, finalSize, initialSize, url }) => (
-                <ResultCard
-                  filename={filename}
-                  finalSize={finalSize}
-                  url={url}
-                  initialSize={initialSize}
-                />
-              ))}
-            </div>
+            <ul className="flex flex-wrap bg-gray-100 rounded-md p-2">
+              {result.map(
+                ({ filename, finalSize, initialSize, url }, index) => (
+                  <Preview.Card
+                    filename={filename}
+                    filesize={Number(finalSize)}
+                    imgSrc={url}
+                    index={index}
+                    key={url}
+                    ctaButton={() => (
+                      <button
+                        type="button"
+                        className="ml-auto focus:outline-none hover:bg-gray-900 p-1 rounded-md transition-colors duration-300"
+                        onClick={async () => {
+                          const href = await fetch(url)
+                            .then((response) => response.blob())
+                            .then((blob) => URL.createObjectURL(blob));
+                          const link = document.createElement("a");
+                          link.href = href;
+                          link.download = filename;
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          className="h-4 w-4"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    )}
+                  />
+                )
+              )}
+            </ul>
           </div>
         )}
       </div>

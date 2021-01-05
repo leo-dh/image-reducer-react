@@ -19,7 +19,9 @@ export default function Tabs<T>({
   info,
 }: TabsProps<T> & HTMLProps<HTMLDivElement>) {
   return (
-    <div className={`flex items-center w-min ${className}`}>
+    <div
+      className={`flex items-start sm:items-center flex-col sm:flex-row w-min space-y-2 ${className}`}
+    >
       {info}
       <ul className="flex cursor-pointer border-gray-200 border-2 w-min ">
         {values.map((value) => (

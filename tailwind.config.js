@@ -6,11 +6,16 @@ module.exports = {
       minWidth: {
         "8ch": "8ch",
       },
+      spacing: {
+        50: "12.5rem",
+      },
     },
   },
   variants: {
     extend: {
       opacity: ["disabled"],
+      backgroundColor: ["active"],
+      textColor: ["active"],
     },
   },
   plugins: [],
