@@ -6,6 +6,7 @@ import Preview from "./components/Preview";
 enum COMPRESSION_MODE {
   LOSSLESS = "LOSSLESS",
   LOSSY = "LOSSY",
+  CUSTOM = "CUSTOM",
 }
 interface CompressResults {
   filename: string;
@@ -81,21 +82,21 @@ function MainPage() {
   return (
     <div className="flex">
       <div className="p-8 w-full h-full flex flex-col">
-        <h1 className="text-center text-3xl text-purple-500 font-bold mb-12">
+        <h1 className="text-center text-3xl text-purple-500 font-extrabold mb-12">
           Minify Images
         </h1>
         <Tabs<COMPRESSION_MODE>
           activeValue={compressionMode}
           values={Object.values(COMPRESSION_MODE)}
           callback={setCompressionMode}
-          info={<h3 className="font-bold mr-4 min-w-8ch">MODE: </h3>}
+          info={<h3 className="font-extrabold mr-4 min-w-8ch">MODE: </h3>}
           className="mb-4 sm:p-2"
         />
         {compressionMode === COMPRESSION_MODE.LOSSY && (
           <Slider
             callback={setQuality}
             value={quality}
-            info={<h3 className="font-bold mr-4 min-w-8ch">QUALITY: </h3>}
+            info={<h3 className="font-extrabold mr-4 min-w-8ch">QUALITY: </h3>}
             className="mb-4 sm:p-2"
           />
         )}
@@ -140,7 +141,7 @@ function MainPage() {
             </i>
             <p className="text-lg text-purple-500">Drop files to upload</p>
           </div>
-          <p className="mb-1 font-semibold text-gray-900 flex flex-wrap justify-center">
+          <p className="mb-1 font-bold text-gray-900 flex flex-wrap justify-center">
             Drag and drop your images here
           </p>
           <p className="text-xs text-gray-500 mb-3">
@@ -168,7 +169,7 @@ function MainPage() {
           </button>
         </div>
 
-        <h3 className="pt-8 pb-3 font-semibold sm:text-lg text-gray-900">
+        <h3 className="pt-8 pb-3 font-bold sm:text-lg text-gray-900">
           Uploaded Images
         </h3>
         <Preview deleteCallback={deleteFile} files={images} />
@@ -213,7 +214,7 @@ function MainPage() {
         </div>
         {result.length > 0 && (
           <div className="flex flex-col">
-            <h3 className="pt-8 pb-3 font-semibold sm:text-lg text-gray-900">
+            <h3 className="pt-8 pb-3 font-bold sm:text-lg text-gray-900">
               Results
             </h3>
             <ul className="flex flex-wrap bg-gray-100 rounded-md p-2">
