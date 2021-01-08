@@ -1,54 +1,41 @@
-const a11yOff = Object.keys(require("eslint-plugin-jsx-a11y").rules).reduce(
-  (acc, rule) => {
-    acc[`jsx-a11y/${rule}`] = "off";
-    return acc;
-  },
-  {}
-);
-
 module.exports = {
-  parser: "@typescript-eslint/parser",
+  parser: "@typescript-eslint/parser", // Specifies the ESLint parser
   extends: [
-    "react-app",
-    "airbnb",
-    "plugin:jsx-a11y/recommended",
-    "prettier",
-    "prettier/react",
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+    "plugin:prettier/recommended",
   ],
-  plugins: ["jsx-a11y", "prettier"],
-  rules: {
-    "react/jsx-filename-extension": [
-      2,
-      { extensions: [".js", ".jsx", ".ts", ".tsx"] },
-    ],
-    "no-use-before-define": "off",
-    "@typescript-eslint/no-use-before-define": ["error"],
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        ts: "never",
-        tsx: "never",
-        js: "never",
-        jsx: "never",
-      },
-    ],
-    "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars-experimental": "warn",
-    "no-shadow": "off",
-    "@typescript-eslint/no-shadow": ["error"],
-    "no-unused-expressions": "off",
-    "@typescript-eslint/no-unused-expressions": ["error"],
-    ...a11yOff,
-    "no-plusplus": "off",
-  },
   settings: {
-    "import/resolver": {
-      node: {
-        extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
-      },
+    react: {
+      version: "detect",
     },
   },
-  ignorePatterns: ["*.config.js", "*.js"],
-};
+  env: {
+    browser: true,
+    node: true,
+    es6: true,
+  },
+  plugins: ["@typescript-eslint", "react"],
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
+    },
+    ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
+    sourceType: "module", // Allows for the use of imports
+  },
+  rules: {
+    "react/prop-types": "off", // Disable prop-types as we use TypeScript for type checking
+    "@typescript-eslint/explicit-function-return-type": "off",
+  },
+  overrides: [
+    // Override some TypeScript rules just for .js files
+    {
+      files: ["*.js"],
+      rules: {
+        "@typescript-eslint/no-var-requires": "off", //
+      },
+    },
+  ],
+}

@@ -1,7 +1,7 @@
-import React, { useState, useRef } from "react";
-import Tabs from "./components/Tabs";
-import Slider from "./components/Slider";
-import Preview from "./components/Preview";
+import React, { useState, useRef } from "react"
+import Tabs from "../components/Tabs"
+import Slider from "../components/Slider"
+import Preview from "../components/Preview"
 
 enum COMPRESSION_MODE {
   LOSSLESS = "LOSSLESS",
@@ -9,75 +9,80 @@ enum COMPRESSION_MODE {
   CUSTOM = "CUSTOM",
 }
 interface CompressResults {
-  filename: string;
-  initialSize: string;
-  finalSize: string;
-  url: string;
+  filename: string
+  initialSize: string
+  finalSize: string
+  url: string
 }
 
-const BACKEND_URL = "/minify";
+const BACKEND_URL = "/minify"
 
-function MainPage() {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const [images, setImages] = useState<File[]>([]);
-  const [quality, setQuality] = useState(80);
+function Home() {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const overlayRef = useRef<HTMLDivElement>(null)
+  const [images, setImages] = useState<File[]>([])
+  const [quality, setQuality] = useState(80)
   const [compressionMode, setCompressionMode] = useState(
     COMPRESSION_MODE.LOSSLESS
-  );
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<CompressResults[]>([]);
+  )
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState<CompressResults[]>([])
 
   const filterFiles = (fileList: FileList) => {
-    setImages((oldValue) => {
-      const newValue = [...oldValue];
-      const limits = Math.min(10 - newValue.length, fileList.length);
+    setImages(oldValue => {
+      const newValue = [...oldValue]
+      const limits = Math.min(10 - newValue.length, fileList.length)
       for (let i = 0; i < limits; i++) {
-        const element = fileList[i];
+        const element = fileList[i]
         if (
           element.size < 30 * 1024 * 1024 &&
-          element.type.match(/image\/(jpg|jpeg|png)/)
+          /image\/(jpg|jpeg|png)/.exec(element.type)
         ) {
-          newValue.push(element);
+          newValue.push(element)
         }
       }
-      return newValue;
-    });
-  };
+      return newValue
+    })
+  }
 
   const deleteFile = (index: number) => {
-    setImages((oldValue) => {
-      const newValue = [...oldValue];
-      newValue.splice(index, 1);
-      return newValue;
-    });
-  };
+    setImages(oldValue => {
+      const newValue = [...oldValue]
+      newValue.splice(index, 1)
+      return newValue
+    })
+  }
+
+  const checkForFile = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!e.dataTransfer) return false
+    return e.dataTransfer.types.includes("Files")
+  }
 
   const sendImages = () => {
-    const promises = images.map(async (file) => {
-      const formData = new FormData();
-      formData.append("image", file);
+    const promises = images.map(async file => {
+      const formData = new FormData()
+      formData.append("image", file)
       const url = `${BACKEND_URL}${
         compressionMode === COMPRESSION_MODE.LOSSY
           ? `?${new URLSearchParams({ quality: quality.toString() })}`
           : ""
-      }`;
+      }`
       try {
         const res = await fetch(url, {
           method: "POST",
           body: formData,
-        });
-        const value = await res.json();
-        setResult((oldValue) => {
-          const newValue = [...oldValue, value];
-          return newValue;
-        });
+        })
+        const value = await res.json()
+        setResult(oldValue => {
+          const newValue = [...oldValue, value]
+          return newValue
+        })
       } catch (err) {
-        console.error(err);
+        console.error(err)
       }
-    });
-    return promises;
-  };
+    })
+    return promises
+  }
 
   return (
     <div className="flex">
@@ -102,24 +107,25 @@ function MainPage() {
         )}
         <div
           className="border-dashed border-2 border-gray-400 rounded-md py-12 flex flex-col justify-center items-center relative"
-          onDrop={(e) => {
-            e.preventDefault();
-            overlayRef.current?.classList.replace("opacity-100", "opacity-0");
-            const { files } = e.dataTransfer;
-            filterFiles(files);
+          onDrop={e => {
+            e.preventDefault()
+            if (!e.dataTransfer) return
+            overlayRef.current?.classList.replace("opacity-100", "opacity-0")
+            const { files } = e.dataTransfer
+            filterFiles(files)
           }}
-          onDragOver={(e) => {
-            if (e.dataTransfer.types.indexOf("Files") > -1) e.preventDefault();
+          onDragOver={e => {
+            if (checkForFile(e)) e.preventDefault()
           }}
-          onDragEnter={(e) => {
-            e.preventDefault();
-            if (e.dataTransfer.types.indexOf("Files") > -1) {
-              overlayRef.current?.classList.replace("opacity-0", "opacity-100");
+          onDragEnter={e => {
+            e.preventDefault()
+            if (checkForFile(e)) {
+              overlayRef.current?.classList.replace("opacity-0", "opacity-100")
             }
           }}
-          onDragLeave={(e) => {
-            if (e.dataTransfer.types.indexOf("Files") > -1) {
-              overlayRef.current?.classList.replace("opacity-100", "opacity-0");
+          onDragLeave={e => {
+            if (checkForFile(e)) {
+              overlayRef.current?.classList.replace("opacity-100", "opacity-0")
             }
           }}
         >
@@ -154,15 +160,16 @@ function MainPage() {
             accept="image/png, image/jpeg, image/jpg"
             className="hidden"
             ref={inputRef}
-            onChange={(e) => {
-              if (e.target.files) filterFiles(e.target.files);
+            onInput={e => {
+              const files = (e.target as HTMLInputElement).files
+              if (files) filterFiles(files)
             }}
           />
           <button
             type="button"
             className="mt-2 rounded-md px-3 py-1 bg-gray-200 hover:bg-gray-300 focus:shadow-outline focus:outline-none font-semibold text-gray-800"
             onClick={() => {
-              inputRef.current?.click();
+              inputRef.current?.click()
             }}
           >
             Upload image
@@ -182,12 +189,12 @@ function MainPage() {
                 : "hover:bg-gray-300 hover:text-black cursor-pointer"
             }`}
             onClick={async () => {
-              if (images.length === 0) return;
-              setLoading(true);
-              const responses = sendImages();
-              await Promise.all(responses);
-              setImages([]);
-              setLoading(false);
+              if (images.length === 0) return
+              setLoading(true)
+              const responses = sendImages()
+              await Promise.all(responses)
+              setImages([])
+              setLoading(false)
             }}
             disabled={loading}
           >
@@ -232,14 +239,14 @@ function MainPage() {
                         className="ml-auto focus:outline-none hover:bg-gray-900 p-1 rounded-md transition-colors duration-300"
                         onClick={async () => {
                           const href = await fetch(url)
-                            .then((response) => response.blob())
-                            .then((blob) => URL.createObjectURL(blob));
-                          const link = document.createElement("a");
-                          link.href = href;
-                          link.download = filename;
-                          document.body.appendChild(link);
-                          link.click();
-                          document.body.removeChild(link);
+                            .then(response => response.blob())
+                            .then(blob => URL.createObjectURL(blob))
+                          const link = document.createElement("a")
+                          link.href = href
+                          link.download = filename
+                          document.body.appendChild(link)
+                          link.click()
+                          document.body.removeChild(link)
                         }}
                       >
                         <svg
@@ -264,7 +271,7 @@ function MainPage() {
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default MainPage;
+export default Home
