@@ -35,7 +35,7 @@ module.exports = {
     // `gatsby-plugin-offline`,
   ],
   proxy: {
-    prefix: "/",
-    url: "http://localhost:5000",
+    prefix: '/api',
+    url: 'http://localhost:5000',
   },
-}
+};

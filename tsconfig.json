@@ -6,13 +6,16 @@
     "lib": ["dom", "esnext"],
     "strict": true,
     "noEmit": true,
-    "isolatedModules": true,
     "esModuleInterop": true,
     "noUnusedLocals": false,
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "Node",
-    "skipLibCheck": true
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "preserveConstEnums": true,
+    "paths": {
+      "Codecs/*": ["./static/codecs/*"]
+    }
   },
   "exclude": ["node_modules", "public", ".cache"]
 }
