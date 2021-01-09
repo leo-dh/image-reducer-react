@@ -1,0 +1,46 @@
+import mozjpegModuleFactory, {
+  MozJPEGModule,
+  EncodeOptions,
+} from 'Codecs/mozjpeg/enc/mozjpeg_enc';
+
+let mozjpegModule: Promise<MozJPEGModule>;
+
+// Gatsby Typescript Plugin doesn't allow export const enum
+enum MozJpegColorSpace {
+  GRAYSCALE = 1,
+  RGB,
+  YCbCr,
+}
+
+const defaultOptions: EncodeOptions = {
+  quality: 75,
+  baseline: false,
+  arithmetic: false,
+  progressive: true,
+  optimize_coding: true,
+  smoothing: 0,
+  color_space: MozJpegColorSpace.YCbCr.valueOf(),
+  quant_table: 3,
+  trellis_multipass: false,
+  trellis_opt_zero: false,
+  trellis_opt_table: false,
+  trellis_loops: 1,
+  auto_subsample: true,
+  chroma_subsample: 2,
+  separate_chroma_quality: false,
+  chroma_quality: 75,
+};
+
+export async function encode(
+  data: ImageData,
+  options: EncodeOptions = defaultOptions,
+) {
+  if (!mozjpegModule) {
+    mozjpegModule = mozjpegModuleFactory({
+      locateFile: () => '/codecs/mozjpeg/enc/mozjpeg_enc.wasm',
+    });
+  }
+  const mozjpeg = await mozjpegModule;
+  const result = mozjpeg.encode(data.data, data.width, data.height, options);
+  return result.buffer;
+}
