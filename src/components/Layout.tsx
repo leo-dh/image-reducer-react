@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
-export default function Layout({ children }: { children: ReactNode }) {
+import { h, ComponentChildren } from 'preact';
+export default function Layout({ children }: { children: ComponentChildren }) {
   return <div className="mx-auto container">{children}</div>;
 }

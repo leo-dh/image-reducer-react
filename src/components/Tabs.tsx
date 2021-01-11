@@ -1,10 +1,10 @@
-import React, { HTMLAttributes, ReactNode } from "react"
+import { h, JSX, ComponentChildren, Fragment } from 'preact';
 
-interface TabsProps<T> extends HTMLAttributes<HTMLDivElement> {
-  values: Array<T>
-  activeValue: T
-  callback: (arg: T) => void
-  info?: ReactNode
+interface TabsProps<T> extends JSX.HTMLAttributes<HTMLDivElement> {
+  values: Array<T>;
+  activeValue: T;
+  callback: (arg: T) => void;
+  info?: ComponentChildren;
 }
 
 export default function Tabs<T>({
@@ -27,8 +27,8 @@ export default function Tabs<T>({
             key={value as any}
             className={`py-2 px-6 text-sm font-bold ${
               activeValue === value
-                ? "bg-white shadow-inner"
-                : "text-gray-500 bg-gray-200"
+                ? 'bg-white shadow-inner'
+                : 'text-gray-500 bg-gray-200'
             }`}
             onClick={() => callback(value)}
           >
@@ -37,9 +37,9 @@ export default function Tabs<T>({
         ))}
       </ul>
     </div>
-  )
+  );
 }
 
 Tabs.defaultProps = {
   info: null,
-}
+};

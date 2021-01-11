@@ -1,9 +1,9 @@
-import React, { HTMLAttributes, ReactNode } from "react"
+import { h, JSX, ComponentChildren } from 'preact';
 
-interface SliderProps extends HTMLAttributes<HTMLDivElement> {
-  value: number
-  callback: (arg: number) => void
-  info?: ReactNode
+interface SliderProps extends JSX.HTMLAttributes<HTMLDivElement> {
+  value: number;
+  callback: (arg: number) => void;
+  info?: ComponentChildren;
 }
 
 export default function Slider({
@@ -27,7 +27,7 @@ export default function Slider({
           step="1"
           value={value}
           onChange={e => {
-            callback(Number((e.target as HTMLInputElement).value))
+            callback(Number((e.target as HTMLInputElement).value));
           }}
           className="slider w-40 sm:w-auto"
         />
@@ -40,21 +40,21 @@ export default function Slider({
           step="1"
           pattern="\d+"
           onChange={e => {
-            const numValue = Number((e.target as HTMLInputElement).value)
+            const numValue = Number((e.target as HTMLInputElement).value);
             if (numValue > 100) {
-              callback(100)
+              callback(100);
             } else if (numValue < 1) {
-              callback(1)
+              callback(1);
             } else {
-              callback(Math.round(numValue))
+              callback(Math.round(numValue));
             }
           }}
         />
       </div>
     </div>
-  )
+  );
 }
 
 Slider.defaultProps = {
   info: null,
-}
+};

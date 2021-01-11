@@ -1,8 +1,8 @@
-import React, { HTMLAttributes, ReactNode } from "react"
+import { h, Fragment, JSX } from 'preact';
 
-interface PreviewProps extends HTMLAttributes<HTMLElement> {
-  files: File[]
-  deleteCallback: (idx: number) => void
+interface PreviewProps extends JSX.HTMLAttributes<HTMLUListElement> {
+  files: File[];
+  deleteCallback: (idx: number) => void;
 }
 
 export default function Preview({
@@ -14,7 +14,7 @@ export default function Preview({
   return (
     <ul
       className={`flex flex-1 flex-wrap ${
-        files.length > 0 ? "bg-gray-100" : ""
+        files.length > 0 ? 'bg-gray-100' : ''
       } rounded-md p-2 ${className}`}
       {...props}
     >
@@ -31,7 +31,7 @@ export default function Preview({
                 type="button"
                 className="ml-auto focus:outline-none hover:bg-gray-900 p-1 rounded-md transition-colors duration-300"
                 onClick={() => {
-                  deleteCallback(idx)
+                  deleteCallback(idx);
                 }}
               >
                 <svg
@@ -64,20 +64,20 @@ export default function Preview({
         </li>
       )}
     </ul>
-  )
+  );
 }
 
 interface PreviewCardProps {
-  imgSrc: string
-  filename: string
-  filesize: number
-  index: number
+  imgSrc: string;
+  filename: string;
+  filesize: number;
+  index: number;
   ctaButton: (
     index: number,
     imgSrc: string,
     filename: string,
-    filesize: number
-  ) => ReactNode
+    filesize: number,
+  ) => JSX.Element;
 }
 
 Preview.Card = function Card({
@@ -133,5 +133,5 @@ Preview.Card = function Card({
         </div>
       </div>
     </li>
-  )
-}
+  );
+};

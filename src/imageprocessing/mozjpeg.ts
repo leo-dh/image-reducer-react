@@ -1,18 +1,13 @@
-import mozjpegModuleFactory, {
-  MozJPEGModule,
-  EncodeOptions,
-} from 'Codecs/mozjpeg/enc/mozjpeg_enc';
+import { EncodeOptions } from '../codecs/mozjpeg/mozjpeg_enc';
 
-let mozjpegModule: Promise<MozJPEGModule>;
-
-// Gatsby Typescript Plugin doesn't allow export const enum
-enum MozJpegColorSpace {
+// doesn't allow export const enum
+export enum MozJpegColorSpace {
   GRAYSCALE = 1,
   RGB,
   YCbCr,
 }
 
-const defaultOptions: EncodeOptions = {
+export const defaultOptions: EncodeOptions = {
   quality: 75,
   baseline: false,
   arithmetic: false,
@@ -31,16 +26,16 @@ const defaultOptions: EncodeOptions = {
   chroma_quality: 75,
 };
 
-export async function encode(
-  data: ImageData,
-  options: EncodeOptions = defaultOptions,
-) {
-  if (!mozjpegModule) {
-    mozjpegModule = mozjpegModuleFactory({
-      locateFile: () => '/codecs/mozjpeg/enc/mozjpeg_enc.wasm',
-    });
-  }
-  const mozjpeg = await mozjpegModule;
-  const result = mozjpeg.encode(data.data, data.width, data.height, options);
-  return result.buffer;
-}
+// export async function encode(
+//   data: ImageData,
+//   options: EncodeOptions = defaultOptions,
+// ) {
+//   if (!mozjpegModule) {
+//     mozjpegModule = mozjpegModuleFactory({
+//       locateFile: () => '/codecs/mozjpeg/enc/mozjpeg_enc.wasm',
+//     });
+//   }
+//   const mozjpeg = await mozjpegModule;
+//   const result = mozjpeg.encode(data.data, data.width, data.height, options);
+//   return result.buffer;
+// }

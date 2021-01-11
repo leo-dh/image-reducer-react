@@ -1,10 +1,14 @@
-import React, { useState, useRef } from 'react';
+import { h } from 'preact';
+import { useState, useRef } from 'preact/compat';
 import Tabs from '../components/Tabs';
 import Slider from '../components/Slider';
 import Preview from '../components/Preview';
 import Layout from '../components/Layout';
 import { COMPRESSION_MODE, CompressResults } from '../types';
 import minifyAPI from '../services/minifyAPI';
+import { defaultOptions } from '../imageprocessing/mozjpeg';
+import createImageData from '../imageprocessing/createImageData';
+import EncoderWorker from '../worker?worker';
 
 function Home() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -18,6 +22,16 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CompressResults[]>([]);
   const encoderWorkerRef = useRef<Worker | null>(null);
+
+  const getEncoderWorker = async () => {
+    if (!encoderWorkerRef.current) {
+      const worker = await EncoderWorker();
+      encoderWorkerRef.current = worker;
+      return worker;
+    } else {
+      return encoderWorkerRef.current;
+    }
+  };
 
   const filterFiles = (fileList: FileList) => {
     setImages(oldValue => {
@@ -44,25 +58,46 @@ function Home() {
     });
   };
 
-  const checkForFile = (e: React.DragEvent<HTMLDivElement>) => {
+  const checkForFile = (e: DragEvent) => {
     if (!e.dataTransfer) return false;
     return e.dataTransfer.types.includes('Files');
   };
 
-  const submit = () => {
+  const submit = async () => {
     let promises;
-    promises = images.map(async file => {
-      try {
-        const res = await minifyAPI(file, compressionMode, quality);
-        const value = await res.json();
-        setResult(oldValue => {
-          const newValue = [...oldValue, value];
-          return newValue;
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    });
+    const worker = await getEncoderWorker();
+    if (offline) {
+      promises = images.map(async file => {
+        try {
+          worker.postMessage({
+            file: await createImageData(file),
+            options: defaultOptions,
+          });
+          worker.addEventListener(
+            'message',
+            e => {
+              console.log(e.data);
+            },
+            { once: true },
+          );
+        } catch (err) {
+          console.error(err);
+        }
+      });
+    } else {
+      promises = images.map(async file => {
+        try {
+          const res = await minifyAPI(file, compressionMode, quality);
+          const value = await res.json();
+          setResult(oldValue => {
+            const newValue = [...oldValue, value];
+            return newValue;
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      });
+    }
     return promises;
   };
 
@@ -182,8 +217,8 @@ function Home() {
               onClick={async () => {
                 if (images.length === 0) return;
                 setLoading(true);
-                const responses = submit();
-                await Promise.all(responses);
+                const responses = await submit();
+                responses && (await Promise.all(responses));
                 setImages([]);
                 setLoading(false);
               }}
