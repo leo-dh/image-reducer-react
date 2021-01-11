@@ -3,16 +3,16 @@
     "module": "ESNext",
     "target": "ES2017",
     "jsx": "preserve",
-    "lib": ["dom", "esnext"],
+    "lib": ["dom", "esnext", "webworker"],
     "strict": true,
     "noEmit": true,
-    "esModuleInterop": true,
     "noUnusedLocals": false,
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
     "preserveConstEnums": true,
+    "esModuleInterop": true,
     "paths": {
       "Codecs/*": ["./static/codecs/*"]
     }

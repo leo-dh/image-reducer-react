@@ -5,7 +5,6 @@ import Preview from '../components/Preview';
 import Layout from '../components/Layout';
 import { COMPRESSION_MODE, CompressResults } from '../types';
 import minifyAPI from '../services/minifyAPI';
-import mozjpegEncode from '../services/mozjpegEncode';
 
 function Home() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -18,6 +17,7 @@ function Home() {
   const [offline, setOffline] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CompressResults[]>([]);
+  const encoderWorkerRef = useRef<Worker | null>(null);
 
   const filterFiles = (fileList: FileList) => {
     setImages(oldValue => {
@@ -51,29 +51,18 @@ function Home() {
 
   const submit = () => {
     let promises;
-    if (offline) {
-      promises = images.map(async file => {
-        try {
-          await mozjpegEncode(file);
-        } catch (err) {
-          console.error(err);
-        }
-      });
-    } else {
-      promises = images.map(async file => {
-        try {
-          const res = await minifyAPI(file, compressionMode, quality);
-          const value = await res.json();
-          setResult(oldValue => {
-            const newValue = [...oldValue, value];
-            return newValue;
-          });
-        } catch (err) {
-          console.error(err);
-        }
-      });
-      return promises;
-    }
+    promises = images.map(async file => {
+      try {
+        const res = await minifyAPI(file, compressionMode, quality);
+        const value = await res.json();
+        setResult(oldValue => {
+          const newValue = [...oldValue, value];
+          return newValue;
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    });
     return promises;
   };
 
