@@ -1,21 +1,23 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
     "target": "ES2017",
-    "jsx": "preserve",
-    "lib": ["dom", "esnext", "webworker"],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": [],
+    "allowJs": false,
+    "skipLibCheck": false,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
     "strict": true,
-    "noEmit": true,
-    "noUnusedLocals": false,
-    "allowJs": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
-    "skipLibCheck": true,
-    "preserveConstEnums": true,
-    "esModuleInterop": true,
-    "paths": {
-      "Codecs/*": ["./static/codecs/*"]
-    }
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "noEmit": true,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
   },
-  "exclude": ["node_modules", "public", ".cache"]
+  "include": ["src"],
+  "exclude": ["src/codecs"]
 }
