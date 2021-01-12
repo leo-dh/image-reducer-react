@@ -1,17 +1,20 @@
 import { h, Fragment } from 'preact';
 import { useState, useRef } from 'preact/compat';
 import * as Comlink from 'comlink';
-import Tabs from '../components/Tabs';
-import Slider from '../components/Slider';
-import Preview from '../components/Preview';
-import Layout from '../components/Layout';
+import {
+  DragAndDrop,
+  Layout,
+  Preview,
+  Slider,
+  Tabs,
+  LoadingIcon,
+  DownloadIcon,
+} from '../components';
 import { COMPRESSION_MODE, CompressResults, EncoderWorker } from '../types';
 import minifyAPI from '../services/minifyAPI';
 import { defaultOptions } from '../imageprocessing/mozjpeg';
 import createImageData from '../imageprocessing/createImageData';
 import WorkerModule from '../worker?worker';
-import { DownloadIcon, LoadingIcon } from '../components/Icons';
-import DragAndDrop from '../components/DragAndDrop';
 
 const checkForFile = (e: DragEvent) => {
   if (!e.dataTransfer) return false;
