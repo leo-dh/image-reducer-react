@@ -10,6 +10,11 @@ import minifyAPI from '../services/minifyAPI';
 import { defaultOptions } from '../imageprocessing/mozjpeg';
 import createImageData from '../imageprocessing/createImageData';
 import WorkerModule from '../worker?worker';
+import {
+  DownloadIcon,
+  LoadingIcon,
+  UploadCloudIcon,
+} from '../components/Icons';
 
 const checkForFile = (e: DragEvent) => {
   if (!e.dataTransfer) return false;
@@ -156,17 +161,11 @@ function Home() {
               className="w-full h-full absolute top-0 left-0 pointer-events-none z-50 flex-col items-center justify-center rounded-md flex bg-white bg-opacity-90 opacity-0 transition-opacity duration-300"
               ref={overlayRef}
             >
-              <i>
-                <svg
-                  className="fill-current w-12 h-12 mb-3 text-purple-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M19.479 10.092c-.212-3.951-3.473-7.092-7.479-7.092-4.005 0-7.267 3.141-7.479 7.092-2.57.463-4.521 2.706-4.521 5.408 0 3.037 2.463 5.5 5.5 5.5h13c3.037 0 5.5-2.463 5.5-5.5 0-2.702-1.951-4.945-4.521-5.408zm-7.479-1.092l4 4h-3v4h-2v-4h-3l4-4z" />
-                </svg>
-              </i>
+              <UploadCloudIcon
+                className="w-12 h-12 mb-3 text-purple-500"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              />
               <p className="text-lg text-purple-500">Drop files to upload</p>
             </div>
             <p className="mb-1 font-bold text-gray-900 flex flex-wrap justify-center">
@@ -221,22 +220,10 @@ function Home() {
               disabled={loading}
             >
               {loading && (
-                <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
+                <LoadingIcon
+                  className="animate-spin h-5 w-5 mr-2"
+                  viewBox="0 0 24 24"
+                />
               )}
               {loading ? 'Submitting' : 'Submit'}
             </button>
@@ -271,18 +258,11 @@ function Home() {
                             document.body.removeChild(link);
                           }}
                         >
-                          <svg
+                          <DownloadIcon
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 20 20"
-                            fill="currentColor"
                             className="h-4 w-4"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                          />
                         </button>
                       )}
                     />

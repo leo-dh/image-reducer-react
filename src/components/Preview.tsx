@@ -1,4 +1,5 @@
 import { h, Fragment, JSX } from 'preact';
+import { DeleteIcon, ImageIcon } from './Icons';
 
 interface PreviewProps extends JSX.HTMLAttributes<HTMLUListElement> {
   files: File[];
@@ -34,18 +35,11 @@ export default function Preview({
                   deleteCallback(idx);
                 }}
               >
-                <svg
-                  className="pointer-events-none fill-current w-4 h-4 ml-auto"
+                <DeleteIcon
+                  className="pointer-events-none w-4 h-4 ml-auto"
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
                   viewBox="0 0 24 24"
-                >
-                  <path
-                    className="pointer-events-none"
-                    d="M3 6l3 18h12l3-18h-18zm19-4v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.316c0 .901.73 2 1.631 2h5.711z"
-                  />
-                </svg>
+                />
               </button>
             )}
           />
@@ -103,15 +97,11 @@ Preview.Card = function Card({
           <div className="flex items-center">
             <span className="p-1 hidden sm:block">
               <i>
-                <svg
-                  className="fill-current w-4 h-4 ml-auto"
+                <ImageIcon
+                  className="w-4 h-4 ml-auto"
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
                   viewBox="0 0 24 24"
-                >
-                  <path d="M5 8.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5zm9 .5l-2.519 4-2.481-1.96-4 5.96h14l-5-8zm8-4v14h-20v-14h20zm2-2h-24v18h24v-18z" />
-                </svg>
+                />
               </i>
             </span>
 
