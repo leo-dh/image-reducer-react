@@ -25,17 +25,3 @@ export const defaultOptions: EncodeOptions = {
   separate_chroma_quality: false,
   chroma_quality: 75,
 };
-
-// export async function encode(
-//   data: ImageData,
-//   options: EncodeOptions = defaultOptions,
-// ) {
-//   if (!mozjpegModule) {
-//     mozjpegModule = mozjpegModuleFactory({
-//       locateFile: () => '/codecs/mozjpeg/enc/mozjpeg_enc.wasm',
-//     });
-//   }
-//   const mozjpeg = await mozjpegModule;
-//   const result = mozjpeg.encode(data.data, data.width, data.height, options);
-//   return result.buffer;
-// }

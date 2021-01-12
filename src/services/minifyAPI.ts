@@ -1,17 +1,17 @@
-import { COMPRESSION_MODE } from '../types';
+import { CompressionMode } from '../types';
 
 const BACKEND_URL = '/api/minify';
 
 export default function minifyAPI(
   file: File,
-  compressionMode: COMPRESSION_MODE,
+  compressionMode: CompressionMode,
   quality: number,
 ) {
   const formData = new FormData();
   formData.append('image', file);
 
   const url = `${BACKEND_URL}${
-    compressionMode === COMPRESSION_MODE.LOSSY
+    compressionMode === CompressionMode.LOSSY
       ? `?${new URLSearchParams({ quality: quality.toString() })}`
       : ''
   }`;

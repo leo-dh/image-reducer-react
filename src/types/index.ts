@@ -1,6 +1,6 @@
 import { EncodeOptions } from '../codecs/mozjpeg/mozjpeg_enc';
 
-export enum COMPRESSION_MODE {
+export enum CompressionMode {
   LOSSLESS = 'LOSSLESS',
   LOSSY = 'LOSSY',
   CUSTOM = 'CUSTOM',
