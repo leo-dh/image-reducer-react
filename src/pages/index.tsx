@@ -150,7 +150,20 @@ function Home() {
     }
   };
 
+  const downloadFile = async (url: string, filename: string) => {
+    const href = await fetch(url)
+      .then(response => response.blob())
+      .then(blob => URL.createObjectURL(blob));
+    const link = document.createElement('a');
+    link.href = href;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const submit = async () => {
+    // TODO Add compression mode logic
     let promises;
     const worker = await getEncoderWorker();
     if (state.offline) {
@@ -318,16 +331,8 @@ function Home() {
                         <button
                           type="button"
                           className="ml-auto focus:outline-none hover:bg-gray-900 p-1 rounded-md transition-colors duration-300"
-                          onClick={async () => {
-                            const href = await fetch(url)
-                              .then(response => response.blob())
-                              .then(blob => URL.createObjectURL(blob));
-                            const link = document.createElement('a');
-                            link.href = href;
-                            link.download = filename;
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
+                          onClick={() => {
+                            downloadFile(url, filename);
                           }}
                         >
                           <DownloadIcon
