@@ -1,14 +1,20 @@
 import { h } from 'preact';
 import { useState, useRef } from 'preact/compat';
+import * as Comlink from 'comlink';
 import Tabs from '../components/Tabs';
 import Slider from '../components/Slider';
 import Preview from '../components/Preview';
 import Layout from '../components/Layout';
-import { COMPRESSION_MODE, CompressResults } from '../types';
+import { COMPRESSION_MODE, CompressResults, EncoderWorker } from '../types';
 import minifyAPI from '../services/minifyAPI';
 import { defaultOptions } from '../imageprocessing/mozjpeg';
 import createImageData from '../imageprocessing/createImageData';
-import EncoderWorker from '../worker?worker';
+import WorkerModule from '../worker?worker';
+
+const checkForFile = (e: DragEvent) => {
+  if (!e.dataTransfer) return false;
+  return e.dataTransfer.types.includes('Files');
+};
 
 function Home() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -18,14 +24,14 @@ function Home() {
   const [compressionMode, setCompressionMode] = useState(
     COMPRESSION_MODE.LOSSLESS,
   );
-  const [offline, setOffline] = useState(false);
+  const [offline, setOffline] = useState(true);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CompressResults[]>([]);
-  const encoderWorkerRef = useRef<Worker | null>(null);
+  const encoderWorkerRef = useRef<Comlink.Remote<EncoderWorker> | null>(null);
 
   const getEncoderWorker = async () => {
     if (!encoderWorkerRef.current) {
-      const worker = await EncoderWorker();
+      const worker = Comlink.wrap<EncoderWorker>(await WorkerModule());
       encoderWorkerRef.current = worker;
       return worker;
     } else {
@@ -58,28 +64,18 @@ function Home() {
     });
   };
 
-  const checkForFile = (e: DragEvent) => {
-    if (!e.dataTransfer) return false;
-    return e.dataTransfer.types.includes('Files');
-  };
-
   const submit = async () => {
     let promises;
     const worker = await getEncoderWorker();
     if (offline) {
       promises = images.map(async file => {
         try {
-          worker.postMessage({
-            file: await createImageData(file),
-            options: defaultOptions,
-          });
-          worker.addEventListener(
-            'message',
-            e => {
-              console.log(e.data);
-            },
-            { once: true },
+          const blob = await worker.mozjpegEncode(
+            await createImageData(file),
+            defaultOptions,
+            file.type,
           );
+          console.log(blob);
         } catch (err) {
           console.error(err);
         }

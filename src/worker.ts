@@ -1,7 +1,16 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import mozjpegModule, { MozJPEGModule } from './codecs/mozjpeg/mozjpeg_enc';
+import * as Comlink from 'comlink/dist/esm/comlink.min.js';
+import { MozjpegEncode } from './types';
 
-declare let self: Worker;
 let mozjpeg: MozJPEGModule;
+
+const locateFile = () => {
+  //@ts-ignore
+  if (import.meta.env.MODE === 'development')
+    return './codecs/mozjpeg/mozjpeg_enc.wasm';
+  else return './mozjpeg_enc.wasm';
+};
 
 const createBlob = (arrayBuffer: ArrayBuffer, mimetype: string) => {
   const bytes = new Uint8Array(arrayBuffer);
@@ -9,19 +18,22 @@ const createBlob = (arrayBuffer: ArrayBuffer, mimetype: string) => {
   return blob;
 };
 
-self.addEventListener('message', async e => {
+const mozjpegEncode: MozjpegEncode = async (data, options, mimetype) => {
   if (!mozjpeg) {
     mozjpeg = await mozjpegModule({
-      locateFile: () => './mozjpeg_enc.wasm',
+      locateFile,
     });
   }
-  const imageData = e.data.file;
   const encodedResult = mozjpeg.encode(
-    imageData.data,
-    imageData.width,
-    imageData.height,
-    e.data.options,
+    data.data,
+    data.width,
+    data.height,
+    options,
   );
-  const blob = createBlob(encodedResult, e.data.file.type);
-  self.postMessage({ result: blob });
+  const blob = createBlob(encodedResult, mimetype);
+  return blob;
+};
+
+Comlink.expose({
+  mozjpegEncode,
 });
