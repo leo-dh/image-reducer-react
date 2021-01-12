@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
 import { useState, useRef } from 'preact/compat';
 import * as Comlink from 'comlink';
 import Tabs from '../components/Tabs';
@@ -10,11 +10,8 @@ import minifyAPI from '../services/minifyAPI';
 import { defaultOptions } from '../imageprocessing/mozjpeg';
 import createImageData from '../imageprocessing/createImageData';
 import WorkerModule from '../worker?worker';
-import {
-  DownloadIcon,
-  LoadingIcon,
-  UploadCloudIcon,
-} from '../components/Icons';
+import { DownloadIcon, LoadingIcon } from '../components/Icons';
+import DragAndDrop from '../components/DragAndDrop';
 
 const checkForFile = (e: DragEvent) => {
   if (!e.dataTransfer) return false;
@@ -22,8 +19,6 @@ const checkForFile = (e: DragEvent) => {
 };
 
 function Home() {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
   const [images, setImages] = useState<File[]>([]);
   const [quality, setQuality] = useState(80);
   const [compressionMode, setCompressionMode] = useState(
@@ -126,77 +121,27 @@ function Home() {
               className="mb-4 sm:p-2"
             />
           )}
-          <div
-            className="border-dashed border-2 border-gray-400 rounded-md py-12 flex flex-col justify-center items-center relative"
-            onDrop={e => {
-              e.preventDefault();
-              if (!e.dataTransfer) return;
-              overlayRef.current?.classList.replace('opacity-100', 'opacity-0');
-              const { files } = e.dataTransfer;
-              filterFiles(files);
-            }}
-            onDragOver={e => {
-              if (checkForFile(e)) e.preventDefault();
-            }}
-            onDragEnter={e => {
-              e.preventDefault();
-              if (checkForFile(e)) {
-                overlayRef.current?.classList.replace(
-                  'opacity-0',
-                  'opacity-100',
-                );
-              }
-            }}
-            onDragLeave={e => {
-              if (checkForFile(e)) {
-                overlayRef.current?.classList.replace(
-                  'opacity-100',
-                  'opacity-0',
-                );
-              }
-            }}
-          >
-            <div
-              id="overlay"
-              className="w-full h-full absolute top-0 left-0 pointer-events-none z-50 flex-col items-center justify-center rounded-md flex bg-white bg-opacity-90 opacity-0 transition-opacity duration-300"
-              ref={overlayRef}
-            >
-              <UploadCloudIcon
-                className="w-12 h-12 mb-3 text-purple-500"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-              />
-              <p className="text-lg text-purple-500">Drop files to upload</p>
-            </div>
-            <p className="mb-1 font-bold text-gray-900 flex flex-wrap justify-center">
-              Drag and drop your images here
-            </p>
-            <p className="text-xs text-gray-500 mb-3">
-              Accepts jpeg, png. Max 30mb.
-            </p>
-            <input
-              id="hidden-input"
-              type="file"
-              multiple
-              accept="image/png, image/jpeg, image/jpg"
-              className="hidden"
-              ref={inputRef}
-              onInput={e => {
-                const files = (e.target as HTMLInputElement).files;
-                if (files) filterFiles(files);
-              }}
-            />
-            <button
-              type="button"
-              className="mt-2 rounded-md px-3 py-1 bg-gray-200 hover:bg-gray-300 focus:shadow-outline focus:outline-none font-semibold text-gray-800"
-              onClick={() => {
-                inputRef.current?.click();
-              }}
-            >
-              Upload image
-            </button>
-          </div>
-
+          <DragAndDrop className="border-dashed border-2 border-gray-400 rounded-md py-12 flex flex-col justify-center items-center pointer-events-auto">
+            {inputRef => (
+              <>
+                <p className="mb-1 font-bold text-gray-900 flex flex-wrap justify-center">
+                  Drag and drop your images here
+                </p>
+                <p className="text-xs text-gray-500 mb-3">
+                  Accepts jpeg, png. Max 30mb.
+                </p>
+                <button
+                  type="button"
+                  className="mt-2 rounded-md px-3 py-1 bg-gray-200 hover:bg-gray-300 focus:shadow-outline focus:outline-none font-semibold text-gray-800"
+                  onClick={() => {
+                    inputRef.current?.click();
+                  }}
+                >
+                  Upload image
+                </button>
+              </>
+            )}
+          </DragAndDrop>
           <h3 className="pt-8 pb-3 font-bold sm:text-lg text-gray-900">
             Uploaded Images
           </h3>
