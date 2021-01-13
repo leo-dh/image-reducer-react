@@ -15,8 +15,9 @@ import {
 } from '../components';
 import { CompressionMode, CompressResults, EncoderWorker } from '../types';
 import minifyAPI from '../services/minifyAPI';
-import { defaultOptions } from '../imageprocessing/mozjpeg';
-import createImageData from '../imageprocessing/createImageData';
+import { defaultOptions as mozjpegDefaultOptions } from '../imageprocessing/mozjpeg';
+import { defaultOptions as imagequantDefaultOptions } from '../imageprocessing/imagequant';
+import { createImageData, imageDataToBlob } from '../imageprocessing/utils';
 import WorkerModule from '../worker?worker';
 
 interface ReducerState {
@@ -166,16 +167,28 @@ function Home() {
 
   const submit = async () => {
     // TODO Add compression mode logic
+    // TODO move mimetype comparison to worker
     let promises;
     const worker = await getEncoderWorker();
     if (state.offline) {
       promises = state.files.map(async file => {
         try {
-          const blob = await worker.mozjpegEncode(
-            await createImageData(file),
-            defaultOptions,
-            file.type,
-          );
+          let blob: Blob;
+          const imageData = await createImageData(file);
+          if (/image\/(jpg|jpeg)/.exec(file.type)) {
+            blob = await worker.mozjpegEncode(
+              imageData,
+              mozjpegDefaultOptions,
+              file.type,
+            );
+          } else {
+            blob = await imageDataToBlob(
+              await worker.imagequantEncode(
+                imageData,
+                imagequantDefaultOptions,
+              ),
+            );
+          }
           const value: CompressResults = {
             filename: file.name,
             initialSize: file.size.toString(),
