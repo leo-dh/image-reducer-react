@@ -6,9 +6,10 @@ module.exports = {
   },
   darkMode: false, // or 'media' or 'class'
   theme: {
-    fontFamily: {
-      sans: ['Nunito', ...defaultTheme.fontFamily.sans],
-    },
+    extend: {
+      fontFamily: {
+        sans: ['Nunito', ...defaultTheme.fontFamily.sans],
+      },
       spacing: {
         50: '12.5rem',
       },
@@ -19,6 +20,7 @@ module.exports = {
       opacity: ['disabled'],
       backgroundColor: ['active'],
       textColor: ['active'],
+      display: ['group-hover'],
     },
   },
   plugins: [],

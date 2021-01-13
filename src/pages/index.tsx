@@ -11,6 +11,7 @@ import {
   Tabs,
   LoadingIcon,
   DownloadIcon,
+  Tooltip,
 } from '../components';
 import { CompressionMode, CompressResults, EncoderWorker } from '../types';
 import minifyAPI from '../services/minifyAPI';
@@ -121,7 +122,7 @@ const reducer = (state: ReducerState, action: ReducerAction): ReducerState => {
 const initialState: ReducerState = {
   files: [],
   quality: 80,
-  compressionMode: CompressionMode.LOSSLESS,
+  compressionMode: CompressionMode.LOSSY,
   offline: true,
   loading: false,
   result: [],
@@ -232,17 +233,40 @@ function Home() {
             className="mb-4 sm:p-2"
           />
           {state.compressionMode === CompressionMode.LOSSY && (
-            <Slider
-              callback={arg => {
-                dispatch({ type: ReducerActionType.SET_QUALITY, quality: arg });
-              }}
-              value={state.quality}
-              info={
-                <h3 className="font-extrabold mr-4 min-w-8ch">QUALITY: </h3>
-              }
-              className="mb-4 sm:p-2"
-            />
+            <>
+              <Tabs<string>
+                activeValue={state.offline ? 'Browser' : 'Server'}
+                values={['Browser', 'Server']}
+                callback={arg => {
+                  dispatch({
+                    type: ReducerActionType.SET_OFFLINE,
+                    offline: arg === 'Browser',
+                  });
+                }}
+                info={
+                  <FormLabel>
+                    <span className="flex">
+                      <span className="mr-1">AGENT</span>
+                      <Tooltip />:
+                    </span>
+                  </FormLabel>
+                }
+                className="mb-4 sm:p-2 flex"
+              />
+              <Slider
+                callback={arg => {
+                  dispatch({
+                    type: ReducerActionType.SET_QUALITY,
+                    quality: arg,
+                  });
+                }}
+                value={state.quality}
+                info={<FormLabel>QUALITY :</FormLabel>}
+                className="mb-4 sm:p-2"
+              />
+            </>
           )}
+
           <DragAndDrop
             className="border-dashed border-2 border-gray-400 rounded-md py-12 flex flex-col justify-center items-center pointer-events-auto"
             setFilesCallback={arg => {
