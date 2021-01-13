@@ -7,7 +7,8 @@ export enum MozJpegColorSpace {
   YCbCr,
 }
 
-export const defaultOptions: EncodeOptions = {
+export type MozjpegOptions = EncodeOptions;
+export const defaultOptions: MozjpegOptions = {
   quality: 75,
   baseline: false,
   arithmetic: false,

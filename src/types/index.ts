@@ -1,4 +1,5 @@
-import { EncodeOptions } from '../codecs/mozjpeg/mozjpeg_enc';
+import { MozjpegOptions } from '../imageprocessing/mozjpeg';
+import { ImagequantOptions } from '../imageprocessing/imagequant';
 
 export enum CompressionMode {
   LOSSLESS = 'LOSSLESS',
@@ -14,10 +15,16 @@ export interface CompressResults {
 }
 export type MozjpegEncode = (
   imageData: ImageData,
-  options: EncodeOptions,
+  options: MozjpegOptions,
   mimetype: string,
 ) => Promise<Blob>;
 
+export type ImagequantEncode = (
+  imageData: ImageData,
+  options: ImagequantOptions,
+) => Promise<ImageData>;
+
 export interface EncoderWorker extends Worker {
   mozjpegEncode: MozjpegEncode;
+  imagequantEncode: ImagequantEncode;
 }
