@@ -9,10 +9,6 @@ module.exports = {
     fontFamily: {
       sans: ['Nunito', ...defaultTheme.fontFamily.sans],
     },
-    extend: {
-      minWidth: {
-        '8ch': '8ch',
-      },
       spacing: {
         50: '12.5rem',
       },

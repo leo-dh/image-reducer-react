@@ -4,6 +4,7 @@ import { useRef, useReducer, useEffect } from 'preact/compat';
 import * as Comlink from 'comlink';
 import {
   DragAndDrop,
+  FormLabel,
   Layout,
   Preview,
   Slider,
@@ -227,7 +228,7 @@ function Home() {
                 compressionMode: arg,
               });
             }}
-            info={<h3 className="font-extrabold mr-4 min-w-8ch">MODE: </h3>}
+            info={<FormLabel>MODE :</FormLabel>}
             className="mb-4 sm:p-2"
           />
           {state.compressionMode === CompressionMode.LOSSY && (
