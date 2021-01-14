@@ -13,13 +13,13 @@ export default function Tooltip({
         viewBox="0 0 24 24"
         className="h-5 w-5 cursor-pointer"
       />
-      <div className="absolute bottom-full -right-full mb-1 -mr-12 hidden group-hover:block">
+      <div className="absolute bottom-full -right-full mb-1 -mr-12 transform scale-0 group-hover:scale-100 transition-all opacity-0 group-hover:opacity-100 origin-bottom">
         <div className="relative">
           <div className="bg-gray-200 text-gray-800 text-xs rounded py-2 px-3 right-0 bottom-full w-40">
             <p>
-              Choosing <code className="text-purple-500">`Browser`</code> will
-              compress the images using the browser instead of sending the
-              images to a server.
+              Choosing <code className="text-purple-500">`Browser`</code>{' '}
+              (recommended) will compress the images on the spot instead of
+              sending the images to a server.
             </p>
           </div>
           <svg
