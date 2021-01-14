@@ -9,9 +9,14 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Nunito', ...defaultTheme.fontFamily.sans],
+        roboto: ['Roboto', 'sans-serif'],
       },
       spacing: {
         50: '12.5rem',
+      },
+      flexGrow: {
+        2: '2',
+        3: '3',
       },
     },
   },

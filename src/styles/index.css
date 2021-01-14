@@ -1,12 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Roboto:wght@300;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 .slider {
   -webkit-appearance: none;
-  appearance: none;
-  @apply h-2.5 bg-purple-300 rounded-md cursor-pointer focus:outline-none;
+  @apply appearance-none h-2.5 bg-purple-300 rounded-md cursor-pointer focus:outline-none;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  @apply appearance-none w-5 h-5 bg-purple-700 cursor-pointer rounded-full;
+}
+.slider::-moz-range-thumb {
+  @apply border-0 w-5 h-5 bg-purple-700 cursor-pointer rounded-full;
 }
 
 @layer utilities {
