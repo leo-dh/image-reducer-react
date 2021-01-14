@@ -4,10 +4,22 @@ import imagequantModule, {
   QuantizerModule,
 } from './codecs/imagequant/imagequant';
 import * as Comlink from 'comlink/dist/esm/comlink.min.js';
-import { MozjpegEncode, ImagequantEncode } from './types';
+import { Encode } from './types';
+import {
+  defaultOptions as mozjpegDefaultOptions,
+  MozjpegOptions,
+} from './imageprocessing/mozjpeg';
+import {
+  defaultOptions as imagequantDefaultOptions,
+  ImagequantOptions,
+} from './imageprocessing/imagequant';
 
 let mozjpeg: MozJPEGModule;
 let imagequant: QuantizerModule;
+
+const isPng = (mimetype: string) => {
+  return /image\/png/.exec(mimetype);
+};
 
 const mozjpegLocateFile = () => {
   //@ts-ignore
@@ -29,8 +41,11 @@ const createBlob = (arrayBuffer: ArrayBuffer, mimetype: string) => {
   return blob;
 };
 
-// TODO Maybe return it as ImageData? Might be easier to process when returning to main thread
-const mozjpegEncode: MozjpegEncode = async (data, options, mimetype) => {
+const mozjpegEncode = async (
+  data: ImageData,
+  options: MozjpegOptions,
+  mimetype: string,
+) => {
   if (!mozjpeg) {
     mozjpeg = await mozjpegModule({ locateFile: mozjpegLocateFile });
   }
@@ -40,11 +55,13 @@ const mozjpegEncode: MozjpegEncode = async (data, options, mimetype) => {
     data.height,
     options,
   );
-  const blob = createBlob(encodedResult, mimetype);
-  return blob;
+  return createBlob(encodedResult.buffer, mimetype);
 };
 
-const imagequantEncode: ImagequantEncode = async (data, options) => {
+const imagequantEncode = async (
+  data: ImageData,
+  options: ImagequantOptions,
+) => {
   if (!imagequant) {
     imagequant = await imagequantModule({ locateFile: imagequantLocateFile });
   }
@@ -62,7 +79,15 @@ const imagequantEncode: ImagequantEncode = async (data, options) => {
   );
 };
 
+// TODO integrate quality with the encode functions
+const encode: Encode = (imageData, quality, mimetype) => {
+  if (isPng(mimetype)) {
+    return imagequantEncode(imageData, imagequantDefaultOptions);
+  } else {
+    return mozjpegEncode(imageData, mozjpegDefaultOptions, mimetype);
+  }
+};
+
 Comlink.expose({
-  mozjpegEncode,
-  imagequantEncode,
+  encode,
 });

@@ -13,16 +13,13 @@ import {
   DownloadIcon,
   Tooltip,
 } from '../components';
-import {
-  CompressionMode,
-  CompressResults,
-  EncoderWorker,
-  FILE_SIZE_LIMIT,
-} from '../types';
+import { CompressionMode, CompressResults, EncoderWorker } from '../types';
 import minifyAPI from '../services/minifyAPI';
-import { defaultOptions as mozjpegDefaultOptions } from '../imageprocessing/mozjpeg';
-import { defaultOptions as imagequantDefaultOptions } from '../imageprocessing/imagequant';
-import { createImageData, imageDataToBlob } from '../imageprocessing/utils';
+import {
+  fileToImageData,
+  FILE_SIZE_LIMIT,
+  imageDataToBlob,
+} from '../imageprocessing/utils';
 import WorkerModule from '../worker?worker';
 
 interface ReducerState {
@@ -171,33 +168,21 @@ function Home() {
 
   const submit = async () => {
     // TODO Add compression mode logic
-    // TODO move mimetype comparison to worker
     let promises;
     const worker = await getEncoderWorker();
     if (state.offline) {
       promises = state.files.map(async file => {
         try {
-          let blob: Blob;
-          const imageData = await createImageData(file);
-          if (/image\/(jpg|jpeg)/.exec(file.type)) {
-            blob = await worker.mozjpegEncode(
-              imageData,
-              mozjpegDefaultOptions,
-              file.type,
-            );
-          } else {
-            blob = await imageDataToBlob(
-              await worker.imagequantEncode(
-                imageData,
-                imagequantDefaultOptions,
-              ),
-            );
+          const imageData = await fileToImageData(file);
+          let result = await worker.encode(imageData, state.quality, file.type);
+          if (result instanceof ImageData) {
+            result = await imageDataToBlob(result);
           }
           const value: CompressResults = {
             filename: file.name,
             initialSize: file.size.toString(),
-            finalSize: blob.size.toString(),
-            url: URL.createObjectURL(blob),
+            finalSize: result.size.toString(),
+            url: URL.createObjectURL(result),
           };
           dispatch({
             type: ReducerActionType.UPDATE_RESULTS,

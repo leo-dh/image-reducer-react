@@ -1,10 +1,7 @@
-import { MozjpegOptions } from '../imageprocessing/mozjpeg';
-import { ImagequantOptions } from '../imageprocessing/imagequant';
-
 export enum CompressionMode {
   LOSSLESS = 'LOSSLESS',
   LOSSY = 'LOSSY',
-  CUSTOM = 'CUSTOM',
+  // CUSTOM = 'CUSTOM',
 }
 
 export interface CompressResults {
@@ -13,20 +10,13 @@ export interface CompressResults {
   finalSize: string;
   url: string;
 }
-export type MozjpegEncode = (
-  imageData: ImageData,
-  options: MozjpegOptions,
-  mimetype: string,
-) => Promise<Blob>;
 
-export type ImagequantEncode = (
+export type Encode = (
   imageData: ImageData,
-  options: ImagequantOptions,
-) => Promise<ImageData>;
+  quality: number,
+  mimetype: string,
+) => Promise<ImageData> | Promise<Blob>;
 
 export interface EncoderWorker extends Worker {
-  mozjpegEncode: MozjpegEncode;
-  imagequantEncode: ImagequantEncode;
+  encode: Encode;
 }
-
-export const FILE_SIZE_LIMIT = 30 * 1024 * 1024;

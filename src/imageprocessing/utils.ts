@@ -1,4 +1,6 @@
-export async function createImageData(file: File) {
+export const FILE_SIZE_LIMIT = 30 * 1024 * 1024;
+
+export async function fileToImageData(file: File) {
   const bitmap = await createImageBitmap(file);
   const canvas = document.createElement('canvas');
   // const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
