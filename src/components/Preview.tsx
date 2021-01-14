@@ -1,5 +1,5 @@
 import { h, Fragment, JSX } from 'preact';
-import { DeleteIcon, ImageIcon } from './Icons';
+import { AntDEmptyIcon, DeleteIcon, ImageIcon } from './Icons';
 
 interface PreviewProps extends JSX.HTMLAttributes<HTMLUListElement> {
   files: File[];
@@ -49,12 +49,8 @@ export default function Preview({
           id="empty"
           className="h-full w-full text-center flex flex-col items-center justify-center "
         >
-          <img
-            className="mx-auto w-32"
-            src="https://user-images.githubusercontent.com/507615/54591670-ac0a0180-4a65-11e9-846c-e55ffce0fe7b.png"
-            alt="no data"
-          />
-          <span className="text-small text-gray-500">No files uploaded</span>
+          <AntDEmptyIcon className="w-32" />
+          <span className="text-small text-gray-500">No images in queue</span>
         </li>
       )}
     </ul>
