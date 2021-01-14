@@ -77,11 +77,18 @@ const reducer = (state: ReducerState, action: ReducerAction): ReducerState => {
         files: state.files.splice(action.deleteIndex!, 1),
       };
 
-    case ReducerActionType.SET_QUALITY:
+    case ReducerActionType.SET_QUALITY: {
+      let quality = ~~action.quality!;
+      if (quality > 100) {
+        quality = 100;
+      } else if (quality < 1) {
+        quality = 1;
+      }
       return {
         ...state,
-        quality: action.quality!,
+        quality,
       };
+    }
 
     case ReducerActionType.SET_COMPRESSION_MODE:
       return {

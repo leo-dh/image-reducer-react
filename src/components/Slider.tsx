@@ -31,25 +31,28 @@ export default function Slider({
           }}
           className="slider w-40 sm:w-auto"
         />
-        <input
-          className="bg-gray-200 w-16 ml-4 px-2 py-1 text-right font-semibold rounded-sm"
-          type="number"
-          value={value}
-          min="1"
-          max="100"
-          step="1"
-          pattern="\d+"
-          onChange={e => {
-            const numValue = Number((e.target as HTMLInputElement).value);
-            if (numValue > 100) {
-              callback(100);
-            } else if (numValue < 1) {
-              callback(1);
-            } else {
-              callback(Math.round(numValue));
-            }
-          }}
-        />
+        <div className="relative ml-4">
+          <input
+            className="bg-gray-200 w-16 px-2 py-1 text-right font-semibold rounded-sm outline-none"
+            type="number"
+            value={value}
+            min="1"
+            max="100"
+            step="1"
+            pattern="\d+"
+            onChange={e => {
+              callback(Number((e.target as HTMLInputElement).value));
+            }}
+          />
+          <svg
+            className="absolute h-4 -left-4 top-1/2 -mt-2 fill-current text-gray-200 transform rotate-90"
+            x="0px"
+            y="0px"
+            viewBox="0 0 255 255"
+          >
+            <polygon className="fill-current" points="0,0 127.5,127.5 255,0" />
+          </svg>
+        </div>
       </div>
     </div>
   );
