@@ -151,9 +151,9 @@ function Home() {
     };
   }, []);
 
-  const getEncoderWorker = async () => {
+  const getEncoderWorker = () => {
     if (!encoderWorkerRef.current) {
-      const worker = Comlink.wrap<EncoderWorker>(await WorkerModule());
+      const worker = Comlink.wrap<EncoderWorker>(new WorkerModule());
       encoderWorkerRef.current = worker;
       return worker;
     } else {
@@ -176,7 +176,7 @@ function Home() {
   const submit = async () => {
     let promises: Promise<void>[];
     if (state.compressionMode === CompressionMode.LOSSY && state.offline) {
-      const worker = await getEncoderWorker();
+      const worker = getEncoderWorker();
       promises = state.files.map(async file => {
         try {
           const imageData = await fileToImageData(file);

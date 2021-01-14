@@ -44,7 +44,10 @@ const mozjpegEncode = async (
   mimetype: string,
 ) => {
   if (!mozjpeg) {
-    mozjpeg = await mozjpegModule({ locateFile: mozjpegLocateFile });
+    mozjpeg = await mozjpegModule({
+      locateFile: mozjpegLocateFile,
+      noInitialRun: true,
+    });
   }
   const encodedResult = mozjpeg.encode(
     data.data,
@@ -60,7 +63,10 @@ const imagequantEncode = async (
   options: ImagequantOptions,
 ) => {
   if (!imagequant) {
-    imagequant = await imagequantModule({ locateFile: imagequantLocateFile });
+    imagequant = await imagequantModule({
+      locateFile: imagequantLocateFile,
+      noInitialRun: true,
+    });
   }
   const encodedResult = imagequant.quantize(
     data.data,
@@ -77,6 +83,7 @@ const imagequantEncode = async (
 };
 
 // TODO integrate quality with the encode functions
+// TODO Edit libimagequant emscripten bridge file to use quality
 const encode: Encode = (imageData, quality, mimetype) => {
   if (isPng(mimetype)) {
     return imagequantEncode(imageData, imagequantDefaultOptions);
