@@ -72,9 +72,9 @@ const reducer = (state: ReducerState, action: ReducerAction): ReducerState => {
     }
 
     case ReducerActionType.DELETE_FILE:
+      state.files.splice(action.deleteIndex!, 1);
       return {
         ...state,
-        files: state.files.splice(action.deleteIndex!, 1),
       };
 
     case ReducerActionType.SET_QUALITY: {
