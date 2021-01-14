@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import mozjpegModule, { MozJPEGModule } from './codecs/mozjpeg/mozjpeg_enc';
 import imagequantModule, {
   QuantizerModule,
@@ -22,14 +21,12 @@ const isPng = (mimetype: string) => {
 };
 
 const mozjpegLocateFile = () => {
-  //@ts-ignore
   if (import.meta.env.MODE === 'development')
     return './codecs/mozjpeg/mozjpeg_enc.wasm';
   return './mozjpeg_enc.wasm';
 };
 
 const imagequantLocateFile = () => {
-  //@ts-ignore
   if (import.meta.env.MODE === 'development')
     return './codecs/imagequant/imagequant.wasm';
   return './imagequant.wasm';

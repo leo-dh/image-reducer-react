@@ -174,10 +174,9 @@ function Home() {
   };
 
   const submit = async () => {
-    // TODO Add compression mode logic
-    let promises;
-    const worker = await getEncoderWorker();
-    if (state.offline) {
+    let promises: Promise<void>[];
+    if (state.compressionMode === CompressionMode.LOSSY && state.offline) {
+      const worker = await getEncoderWorker();
       promises = state.files.map(async file => {
         try {
           const imageData = await fileToImageData(file);
