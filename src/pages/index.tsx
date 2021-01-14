@@ -13,7 +13,12 @@ import {
   DownloadIcon,
   Tooltip,
 } from '../components';
-import { CompressionMode, CompressResults, EncoderWorker } from '../types';
+import {
+  CompressionMode,
+  CompressResults,
+  EncoderWorker,
+  FILE_SIZE_LIMIT,
+} from '../types';
 import minifyAPI from '../services/minifyAPI';
 import { defaultOptions as mozjpegDefaultOptions } from '../imageprocessing/mozjpeg';
 import { defaultOptions as imagequantDefaultOptions } from '../imageprocessing/imagequant';
@@ -48,9 +53,8 @@ interface ReducerAction extends Partial<ReducerState> {
 const filterFiles = (files: File[]) => {
   return files
     .filter(file => {
-      // TODO create a constant for file limit and put it in a file
       if (
-        file.size < 30 * 1024 * 1024 &&
+        file.size < FILE_SIZE_LIMIT &&
         /image\/(jpg|jpeg|png)/.exec(file.type)
       ) {
         return true;

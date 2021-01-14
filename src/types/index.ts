@@ -28,3 +28,5 @@ export interface EncoderWorker extends Worker {
   mozjpegEncode: MozjpegEncode;
   imagequantEncode: ImagequantEncode;
 }
+
+export const FILE_SIZE_LIMIT = 30 * 1024 * 1024;
