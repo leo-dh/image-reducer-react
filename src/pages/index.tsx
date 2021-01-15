@@ -363,6 +363,7 @@ function Home() {
             <ul className="flex flex-wrap bg-gray-100 rounded-md p-2">
               {state.result.map(
                 ({ filename, finalSize, initialSize, url }, index) => (
+                  // TODO Might need to add a tooltip to warn if the finalsize is larger than the initialsize.
                   <Preview.Card
                     filename={filename}
                     filesize={Number(finalSize)}

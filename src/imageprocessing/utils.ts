@@ -19,7 +19,7 @@ export async function imageDataToBlob(
   [canvas.width, canvas.height] = [imageData.width, imageData.height];
   const context = canvas.getContext('2d');
   context?.putImageData(imageData, 0, 0);
-  return await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     canvas.toBlob(blob => {
       if (blob) resolve(blob);
       else reject('Blob is null');

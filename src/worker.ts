@@ -88,7 +88,9 @@ const encode: Encode = (imageData, quality, mimetype) => {
   if (isPng(mimetype)) {
     return imagequantEncode(imageData, imagequantDefaultOptions);
   } else {
-    return mozjpegEncode(imageData, mozjpegDefaultOptions, mimetype);
+    const options = mozjpegDefaultOptions;
+    options.quality = quality;
+    return mozjpegEncode(imageData, options, mimetype);
   }
 };
 
