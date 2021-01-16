@@ -72,8 +72,7 @@ const imagequantEncode = async (
     data.data,
     data.width,
     data.height,
-    options.numColors,
-    options.dither,
+    options,
   );
   return new ImageData(
     new Uint8ClampedArray(encodedResult.buffer),
@@ -82,11 +81,11 @@ const imagequantEncode = async (
   );
 };
 
-// TODO integrate quality with the encode functions
-// TODO Edit libimagequant emscripten bridge file to use quality
 const encode: Encode = (imageData, quality, mimetype) => {
   if (isPng(mimetype)) {
-    return imagequantEncode(imageData, imagequantDefaultOptions);
+    const options = imagequantDefaultOptions;
+    [options.min_quality, options.max_quality] = [~~(0.8 * quality), quality];
+    return imagequantEncode(imageData, options);
   } else {
     const options = mozjpegDefaultOptions;
     options.quality = quality;
