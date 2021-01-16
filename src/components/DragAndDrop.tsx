@@ -117,6 +117,8 @@ export default function DragAndDrop({
         onInput={e => {
           const files = (e.target as HTMLInputElement).files;
           if (files && setFilesCallback) setFilesCallback(Array.from(files));
+          // Allow selecting files of the same path
+          (e.target as HTMLInputElement).value = '';
         }}
       />
       {children(inputRef)}

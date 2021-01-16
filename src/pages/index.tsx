@@ -78,15 +78,9 @@ const reducer = (state: ReducerState, action: ReducerAction): ReducerState => {
       };
 
     case ReducerActionType.SET_QUALITY: {
-      let quality = ~~action.quality!;
-      if (quality > 100) {
-        quality = 100;
-      } else if (quality < 1) {
-        quality = 1;
-      }
       return {
         ...state,
-        quality,
+        quality: action.quality!,
       };
     }
 
@@ -339,7 +333,6 @@ function Home() {
               try {
                 await submit();
               } catch (err) {
-                console.log('HELLO');
                 console.error(err);
               }
               dispatch({ type: ReducerActionType.FINISHED_CONVERSION });

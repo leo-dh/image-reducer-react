@@ -43,6 +43,15 @@ export default function Slider({
             onChange={e => {
               callback(Number((e.target as HTMLInputElement).value));
             }}
+            onBlur={e => {
+              let quality = ~~Number((e.target as HTMLInputElement).value);
+              if (quality > 100) {
+                quality = 100;
+              } else if (quality < 1) {
+                quality = 1;
+              }
+              callback(quality);
+            }}
           />
           <svg
             className="absolute h-4 -left-4 top-1/2 -mt-2 fill-current text-gray-200 transform rotate-90"
