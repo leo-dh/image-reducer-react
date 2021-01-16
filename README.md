@@ -2,8 +2,10 @@
 
 > Simple frontend browser application to bulk compress images either through
 > the browser or using a backend server.
+>
+> Built with Preact + TailwindCSS
 
-[Insert Image Here]
+![Screenshot](./screenshot.png)
 
 ## Credits
 
