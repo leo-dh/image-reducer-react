@@ -84,7 +84,7 @@ const imagequantEncode = async (
 const encode: Encode = (imageData, quality, mimetype) => {
   if (isPng(mimetype)) {
     const options = imagequantDefaultOptions;
-    [options.min_quality, options.max_quality] = [~~(0.8 * quality), quality];
+    [options.min_quality, options.max_quality] = [~~(0.85 * quality), quality];
     return imagequantEncode(imageData, options);
   } else {
     const options = mozjpegDefaultOptions;

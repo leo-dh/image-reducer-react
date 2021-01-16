@@ -77,12 +77,11 @@ const reducer = (state: ReducerState, action: ReducerAction): ReducerState => {
         ...state,
       };
 
-    case ReducerActionType.SET_QUALITY: {
+    case ReducerActionType.SET_QUALITY:
       return {
         ...state,
         quality: action.quality!,
       };
-    }
 
     case ReducerActionType.SET_COMPRESSION_MODE:
       return {

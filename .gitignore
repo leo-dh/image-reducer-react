@@ -4,5 +4,7 @@ dist
 public/assets
 dist-ssr
 *.local
+favicon
 codecs.d.ts
 codecs
+.env

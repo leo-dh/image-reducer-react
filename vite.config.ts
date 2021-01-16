@@ -7,4 +7,7 @@ export default defineConfig({
     jsxFragment: 'Fragment',
   },
   plugins: [preactRefresh()],
+  build: {
+    base: 'minifyimages',
+  },
 });
