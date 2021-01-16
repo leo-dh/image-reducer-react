@@ -12,7 +12,7 @@
 
 ## Issues
 
-- There are currently some edge cases where the file might end up larger than
-  the initial size. This happens to due to the additional overhead from
-  converting from `ImageData` to `Blob` using JavaScript. In cases, one might
+- There are currently some edge cases where the final file size might end up larger than
+  the initial size. This happens due to the additional overhead from
+  converting from `ImageData` to `Blob` using JavaScript. In such cases, one might
   be better off using the server option.
