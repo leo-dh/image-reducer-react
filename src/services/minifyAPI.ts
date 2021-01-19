@@ -1,6 +1,6 @@
 import { CompressionMode } from '../types';
 
-const BACKEND_URL = '/api/minify';
+const BACKEND_URL = `${import.meta.env.BASE_URL}api/minify`;
 
 export default function minifyAPI(
   file: File,

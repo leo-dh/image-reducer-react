@@ -1,4 +1,4 @@
-# Image Reducer Frontend
+# [Minify Images](https://leodh.dev/minifyimages)
 
 > Simple frontend browser application to bulk compress images either through
 > the browser or using a backend server.
